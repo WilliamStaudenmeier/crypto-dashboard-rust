@@ -1,0 +1,6 @@
+# Keep language stats focused on Rust backend code.
+index.html linguist-vendored
+styles.css linguist-vendored
+app.js linguist-vendored
+api/** linguist-vendored
+static/** linguist-vendored

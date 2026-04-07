@@ -438,3 +438,153 @@ async fn main() {
         .await
         .expect("failed to start server");
 }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[test]
+        fn parse_api_base_url_uses_default_when_empty() {
+            let cfg = parse_api_base_url("");
+            assert_eq!(cfg.scheme, "https");
+            assert_eq!(cfg.host, "api.coingecko.com");
+            assert_eq!(cfg.base_path, "/api/v3");
+        }
+
+        #[test]
+        fn parse_api_base_url_supports_custom_https_path() {
+            let cfg = parse_api_base_url("https://example.com/custom/base");
+            assert_eq!(cfg.scheme, "https");
+            assert_eq!(cfg.host, "example.com");
+            assert_eq!(cfg.base_path, "/custom/base");
+        }
+
+        #[test]
+        fn parse_api_base_url_supports_host_without_path() {
+            let cfg = parse_api_base_url("https://api.example.com");
+            assert_eq!(cfg.scheme, "https");
+            assert_eq!(cfg.host, "api.example.com");
+            assert_eq!(cfg.base_path, "");
+        }
+
+        #[test]
+        fn parse_api_base_url_supports_http_scheme() {
+            let cfg = parse_api_base_url("http://localhost:8080/v1");
+            assert_eq!(cfg.scheme, "http");
+            assert_eq!(cfg.host, "localhost:8080");
+            assert_eq!(cfg.base_path, "/v1");
+        }
+
+        #[test]
+        fn parse_api_base_url_falls_back_to_default_host_when_empty_host() {
+            let cfg = parse_api_base_url("https:///v3");
+            assert_eq!(cfg.scheme, "https");
+            assert_eq!(cfg.host, "api.coingecko.com");
+            assert_eq!(cfg.base_path, "/v3");
+        }
+
+        #[test]
+        fn parse_api_base_url_handles_host_only_input_without_scheme() {
+            let cfg = parse_api_base_url("coingecko.example.com");
+            assert_eq!(cfg.scheme, "https");
+            assert_eq!(cfg.host, "coingecko.example.com");
+            assert_eq!(cfg.base_path, "");
+        }
+
+        #[test]
+        fn parse_api_base_url_handles_path_with_query() {
+            let cfg = parse_api_base_url("https://example.com/api/v3?x=1");
+            assert_eq!(cfg.scheme, "https");
+            assert_eq!(cfg.host, "example.com");
+            assert_eq!(cfg.base_path, "/api/v3?x=1");
+        }
+
+        #[test]
+        fn parse_api_base_url_handles_trailing_slash() {
+            let cfg = parse_api_base_url("https://example.com/");
+            assert_eq!(cfg.scheme, "https");
+            assert_eq!(cfg.host, "example.com");
+            assert_eq!(cfg.base_path, "/");
+        }
+
+        #[test]
+        fn bootstrap_payload_validation_requires_all_sections() {
+            let missing_all = json!({});
+            assert!(!is_valid_bootstrap_payload(&missing_all));
+
+            let only_global = json!({ "global": {} });
+            assert!(!is_valid_bootstrap_payload(&only_global));
+
+            let missing_markets = json!({
+                "global": {},
+                "trending": {}
+            });
+            assert!(!is_valid_bootstrap_payload(&missing_markets));
+
+            let full_payload = json!({
+                "global": { "data": {} },
+                "trending": { "coins": [] },
+                "markets": []
+            });
+            assert!(is_valid_bootstrap_payload(&full_payload));
+        }
+
+        #[test]
+        fn now_epoch_ms_returns_positive_timestamp() {
+            let ts = now_epoch_ms();
+            assert!(ts > 0);
+        }
+
+        #[tokio::test]
+        async fn write_and_read_json_file_round_trip() {
+            let temp_dir = std::env::temp_dir().join(format!("crypto-dashboard-rust-test-{}", now_epoch_ms()));
+            let snapshot_path = temp_dir.join("db.json");
+
+            let state = AppState {
+                client: Client::builder().build().expect("client"),
+                api_cfg: parse_api_base_url(""),
+                api_cache: Arc::new(Mutex::new(HashMap::new())),
+                snapshot_lock: Arc::new(Mutex::new(())),
+                snapshot_path: snapshot_path.clone(),
+                static_dir: temp_dir.clone(),
+            };
+
+            let payload = json!({
+                "global": { "data": { "total_market_cap": { "usd": 1 } } },
+                "trending": { "coins": [] },
+                "markets": []
+            });
+
+            let wrote = write_json_file(&state, &snapshot_path, &payload).await;
+            assert!(wrote);
+
+            let loaded = read_json_file(&state, &snapshot_path).await;
+            assert_eq!(loaded, Some(payload));
+
+            let _ = tokio::fs::remove_file(snapshot_path).await;
+            let _ = tokio::fs::remove_dir_all(temp_dir).await;
+        }
+
+        #[tokio::test]
+        async fn read_json_file_returns_none_for_invalid_json() {
+            let temp_dir = std::env::temp_dir().join(format!("crypto-dashboard-rust-test-invalid-{}", now_epoch_ms()));
+            let snapshot_path = temp_dir.join("db.json");
+            tokio::fs::create_dir_all(&temp_dir).await.expect("mkdir");
+            tokio::fs::write(&snapshot_path, b"not-json").await.expect("write");
+
+            let state = AppState {
+                client: Client::builder().build().expect("client"),
+                api_cfg: parse_api_base_url(""),
+                api_cache: Arc::new(Mutex::new(HashMap::new())),
+                snapshot_lock: Arc::new(Mutex::new(())),
+                snapshot_path: snapshot_path.clone(),
+                static_dir: temp_dir.clone(),
+            };
+
+            let loaded = read_json_file(&state, &snapshot_path).await;
+            assert!(loaded.is_none());
+
+            let _ = tokio::fs::remove_file(snapshot_path).await;
+            let _ = tokio::fs::remove_dir_all(temp_dir).await;
+        }
+    }
