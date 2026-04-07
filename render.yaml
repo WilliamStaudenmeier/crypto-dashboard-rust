@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: crypto-dashboard-rust
+    env: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: COINGECKO_BASE_URL
+        value: https://api.coingecko.com/api/v3
+      - key: COINGECKO_API_KEY
+        sync: false
