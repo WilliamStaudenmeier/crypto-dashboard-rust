@@ -46,35 +46,27 @@ fn parse_api_base_url(url: &str) -> ApiConfig {
     let default_url = "https://api.coingecko.com/api/v3";
     let input = if url.is_empty() { default_url } else { url };
 
-    let mut scheme = "https".to_string();
-    let mut host = "api.coingecko.com".to_string();
-    let mut base_path = "/api/v3".to_string();
-
-    let (after_scheme, parsed_scheme) = if let Some((s, rest)) = input.split_once("://") {
-        (rest, Some(s.to_string()))
+    let (scheme, after_scheme) = if let Some((s, rest)) = input.split_once("://") {
+        (s.to_string(), rest)
     } else {
-        (input, None)
+        ("https".to_string(), input)
     };
 
-    if let Some(s) = parsed_scheme {
-        scheme = s;
-    }
-
-    if let Some((h, path)) = after_scheme.split_once('/') {
-        host = if h.is_empty() {
+    let (host, base_path) = if let Some((h, path)) = after_scheme.split_once('/') {
+        let resolved_host = if h.is_empty() {
             "api.coingecko.com".to_string()
         } else {
             h.to_string()
         };
-        base_path = format!("/{}", path);
+        (resolved_host, format!("/{}", path))
     } else {
-        host = if after_scheme.is_empty() {
+        let resolved_host = if after_scheme.is_empty() {
             "api.coingecko.com".to_string()
         } else {
             after_scheme.to_string()
         };
-        base_path = "".to_string();
-    }
+        (resolved_host, "".to_string())
+    };
 
     ApiConfig {
         scheme,
