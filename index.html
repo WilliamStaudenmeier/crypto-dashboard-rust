@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crypto Dashboard C++</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="dashboard-layout">
+        <aside class="menu-sidebar panel">
+          <nav class="menu-list" aria-label="Sidebar menu">
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">
+                <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="17" rx="2"></rect>
+                  <line x1="8" y1="2.5" x2="8" y2="6"></line>
+                  <line x1="16" y1="2.5" x2="16" y2="6"></line>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                </svg>
+              </span>
+              <span class="menu-label">Calendar</span>
+              <span class="menu-badge">2</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">
+                <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                  <circle cx="8.2" cy="9.2" r="1.5"></circle>
+                  <path d="M4.5 17l5.5-5.5 3.5 3.5 2.2-2.2 3.8 4.2"></path>
+                </svg>
+              </span>
+              <span class="menu-label">Gallery</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">
+                <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                </svg>
+              </span>
+              <span class="menu-label">Kanban Board</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">
+                <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="6" width="18" height="12" rx="2"></rect>
+                  <path d="M4 7l8 6 8-6"></path>
+                </svg>
+              </span>
+              <span class="menu-label">Mailbox</span>
+              <span class="menu-chevron">›</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">
+                <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 3h9l3 3v15H6z"></path>
+                  <line x1="9" y1="11" x2="15" y2="11"></line>
+                  <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+              </span>
+              <span class="menu-label">Pages</span>
+              <span class="menu-chevron">›</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">
+                <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+              </span>
+              <span class="menu-label">Extras</span>
+              <span class="menu-chevron">›</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">
+                <svg class="menu-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="6"></circle>
+                  <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+                </svg>
+              </span>
+              <span class="menu-label">Search</span>
+              <span class="menu-chevron">›</span>
+            </a>
+
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">₿</span>
+              <span class="menu-label">Bitcoin</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">Ξ</span>
+              <span class="menu-label">Ethereum</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">₮</span>
+              <span class="menu-label">Tether</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">✕</span>
+              <span class="menu-label">XRP</span>
+            </a>
+            <a href="#" class="menu-item">
+              <span class="menu-icon" aria-hidden="true">＄</span>
+              <span class="menu-label">USDC</span>
+            </a>
+          </nav>
+          <p class="menu-section-label">Miscellaneous</p>
+        </aside>
+
+        <section class="content-column">
+          <header class="hero">
+            <a class="badge" href="https://github.com/WilliamStaudenmeier/crypto-dashboard-cpp" target="_blank" rel="noreferrer">View on GitHub</a>
+            <h1>Crypto Dashboard C++</h1>
+            <p class="subtitle">Live market snapshot powered by CoinGecko and served by a native C++ web service.</p>
+          </header>
+
+          <section class="stats-grid">
+            <article class="card">
+              <h2>Total Market Cap</h2>
+              <p id="market-cap">Loading...</p>
+            </article>
+            <article class="card">
+              <h2>24h Volume</h2>
+              <p id="volume">Loading...</p>
+            </article>
+            <article class="card">
+              <h2>BTC Dominance</h2>
+              <p id="btc-dom">Loading...</p>
+            </article>
+            <article class="card">
+              <h2>ETH Dominance</h2>
+              <p id="eth-dom">Loading...</p>
+            </article>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Trending Tokens</h2>
+            </div>
+            <ul id="trending-list"></ul>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Top Coins by Market Cap</h2>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>24h</th>
+                    <th>Market Cap</th>
+                    <th>Rank</th>
+                  </tr>
+                </thead>
+                <tbody id="coins-body"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      // Set this in Vercel to your Render backend URL, e.g. https://crypto-dashboard-cpp.onrender.com
+      window.__API_BASE_URL__ = window.__API_BASE_URL__ || "";
+    </script>
+    <script src="/app.js"></script>
+  </body>
+</html>
